@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Simple setInterval clock</title>
+    <style>
+      p {
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <button class='start-btn'></button>
+    <button class='stop-btn'></button>
+    <button class='reset-btn'></button>
+    <p class="stop-watch">0</p>
+
+    <script>
+      const startButton = document.querySelector('.start-btn');
+      const stopButton = document.querySelector('.stop-btn');
+      const resetButton = document.querySelector('.reset-btn');
+
+      startButton.textContent = 'Start';
+      stopButton.textContent = 'Stop';
+      resetButton.textContent = 'Reset';
+
+      let secondCount = 0;
+      let displayStopWatch;
+      
+
+      startButton.onclick = function () {
+        startButton.disabled = true;
+        displayStopWatch = setInterval(calculateTime, 1000);
+      }
+
+      stopButton.onclick = function () {
+          clearInterval(displayStopWatch);
+          startButton.disabled = false;  
+          
+      }
+
+      resetButton.onclick = function () {
+        clearInterval(displayStopWatch);
+        secondCount = 0;
+        document.querySelector('.stop-watch').textContent = " 00: " + " 00: "+ " 00 ";
+        startButton.disabled = false;
+      }
+
+      function calculateTime () {
+        secondCount += 1;
+        second = secondCount % 60;
+        minute = Math.floor((secondCount % 3600)/60);
+        hour = Math.floor(secondCount/3600);
+         
+
+        if (hour < 10) {
+          hourString = "0" + hour;
+        }
+        else{
+          hourString = hour;
+        }
+        if (minute < 10) {
+          minuteString = "0" + minute;
+        }
+        else{
+          minuteString = minute;
+        }
+        if (second < 10) {
+          second = "0" + second;
+        }
+        
+        document.querySelector('.stop-watch').textContent = hourString+ " : " + minuteString + " : " + second;
+
+      }
+
+      function displayTime() {
+        let date = new Date();
+        let time = date.toLocaleTimeString();
+        document.querySelector('.stop-watch').textContent = time;
+      }
+
+
+      displayTime();
+      
+
+      
+    </script>
+  </body>
+</html>

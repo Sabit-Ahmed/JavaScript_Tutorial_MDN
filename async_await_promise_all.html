@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>fetch() promise.all() example</title>
+  </head>
+  <body>
+    <p>This is my page</p>
+
+    <script>
+        async function fetchAndDecode(url, type) {
+        let response = await fetch(url);
+        let content;
+
+        if(!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        if(type === 'blob') {
+            content = await response.blob();
+        } else if(type === 'text') {
+            content = response.text();
+        }
+        return content;
+        }
+
+        async function displayContent() {
+            let coffee = fetchAndDecode('https://raw.githubusercontent.com/mdn/learning-area/master/javascript/asynchronous/promises/coffee.jpg', 'blob'); //we need a server if we want to render images/texts from the local file system
+            let tea = fetchAndDecode('https://raw.githubusercontent.com/mdn/learning-area/master/javascript/asynchronous/promises/tea.jpg', 'blob');
+            let description = fetchAndDecode('https://raw.githubusercontent.com/mdn/learning-area/master/javascript/asynchronous/promises/description.txt', 'text');
+
+            let values = await Promise.all([coffee, tea, description]);
+            console.log(values);
+            // Store each value returned from the promises in separate variables; create object URLs from the blobs
+            let objectURL1 = URL.createObjectURL(values[0]);
+            let objectURL2 = URL.createObjectURL(values[1]);
+            let descText = values[2];
+
+            // Display the images in <img> elements
+            let image1 = document.createElement('img');
+            let image2 = document.createElement('img');
+            image1.src = objectURL1;
+            image2.src = objectURL2;
+            document.body.appendChild(image1);
+            document.body.appendChild(image2);
+
+            // Display the text in a paragraph
+            let para = document.createElement('p');
+            para.textContent = descText;
+            document.body.appendChild(para);   
+        }
+
+        displayContent()
+        .catch(e => {
+            console.log(e);
+        });
+
+    </script>
+  </body>
+</html>
